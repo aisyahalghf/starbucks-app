@@ -13,12 +13,14 @@ const Menu = (props) => {
 
   const getData = async () => {
     try {
-      let responseProduct = await axios.get("http://localhost:2000/products");
+      let responseProduct = await axios.get("http://localhost:4000/products");
       let responseCategory = await axios.get(" http://localhost:2000/category");
-      setDatas(responseProduct.data);
+      setDatas(responseProduct?.data?.data);
+      console.log(responseProduct?.data?.data);
       setCategory(responseCategory.data);
     } catch (error) {
-      alert(error);
+      // alert(error);
+      console.log(error);
     }
   };
 
@@ -57,6 +59,9 @@ const Menu = (props) => {
       let filter = await axios.get(
         `http://localhost:2000/products?category=${idx}`
       );
+      // let filter = await axios.get(
+      //   `http://localhost:4000/products?category=${idx}`
+      // );
 
       if (filter.data.length === 0) {
         alert("Product Tidak Tersedia");

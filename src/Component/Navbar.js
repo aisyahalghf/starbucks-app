@@ -10,7 +10,9 @@ export default function Navbar(props) {
         <Link to="/menu">
           <span className="ml-3 font-bold">Menu</span>
         </Link>
-        <span className="ml-3 font-bold">Cards</span>
+        <Link to="/cart">
+          <span className="ml-3 font-bold">Cart</span>
+        </Link>
         <span className="ml-3 font-bold">Gift</span>
       </div>
       <div>

@@ -13,13 +13,15 @@ const DetailProduct = () => {
   const [calories, setCalories] = useState("");
   const [price, setPrice] = useState("");
   const [size, setSize] = useState("");
-  const [order, SetOrder] = useState("");
+  const [totalOrder, SetTotalOrder] = useState("");
 
   const getDataByid = async () => {
     try {
       const res = await axios.get(`http://localhost:2000/products/${Id}`);
       setData(res.data);
-      // console.log(res);
+      const TotalOrder = await axios.get("http://localhost:2000/carts")
+      SetTotalOrder(TotalOrder.data.length)
+      
     } catch (error) {
       console.log(error);
     }
@@ -29,23 +31,27 @@ const DetailProduct = () => {
   }, [Id]);
 
   const sizeOptions = () => {
-    return data?.size?.map((product, idx) => {
+    return data?.size?.map((product, index) => {
       //   console.log(product);
       return (
-        <div onClick={() => handleClick(idx)} key={idx.toString()}>
+        <div onClick={() => handleClick(index)} key={index.toString()}>
           <SizeCup option={product.option} cup={product.cup} />
         </div>
       );
     });
   };
 
-  const handleClick = async (idx) => {
+  const handleClick = async (index) => {
     try {
       const res = await axios.get(`http://localhost:2000/products/${Id}`);
-      setCalories(res.data.size[idx].calories);
-      setPrice(res.data.size[idx].price);
-      setSize(res.data.size[idx].option);
-    } catch (error) {}
+      setCalories(res.data.size[index].calories);
+      setPrice(res.data.size[index].price);
+      setSize(res.data.size[index].price);
+      console.log(size)
+      console.log(res.data)
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleOrder = async () => {
     // Id Product
@@ -64,6 +70,7 @@ const DetailProduct = () => {
     let checkProduct = await axios.get(
       `http://localhost:2000/carts?productId=${parseInt(Id)}`
     );
+    
     if (checkProduct.data.length > 0) {
       // update qty
       await axios.patch(
@@ -74,12 +81,19 @@ const DetailProduct = () => {
     } else {
       // post to cart
       await axios.post("http://localhost:2000/carts", dataToSend);
+    
+     
       toast("add sukses");
     }
+
+    const TotalOrder = await axios.get("http://localhost:2000/carts")
+    SetTotalOrder(TotalOrder.data.length)
   };
+
 
   useEffect(() => {
     handleClick();
+   
   }, []);
 
   return (
@@ -119,7 +133,6 @@ const DetailProduct = () => {
           </div>
           <hr className="border-b-2 border-[#CDE6DE] mb-10 "></hr>
 
-          {/* <div> {Modals()}</div> */}
 
           <div>
             <h1
@@ -150,6 +163,7 @@ const DetailProduct = () => {
           </div>
         </div>
       </div>
+      <div className= "ml-[120px] center text-grey font-extrabold "  >{totalOrder}</div>
       <Button onClick={handleOrder} colorScheme="facebook">
         Add To Order
       </Button>
